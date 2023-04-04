@@ -35,6 +35,12 @@ const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg');
 const doorRoughnessTexture = textureLoader.load('/textures/door/roughness.jpg');
 
 
+const bricksColorTexture = textureLoader.load('/textures/bricks/color.jpg');
+const bricksAmbientOcclusionTexture = textureLoader.load('/textures/bricks/ambientOcclusion.jpg');
+const bricksNormalTexture = textureLoader.load('/textures/bricks/normal.jpg');
+const bricksRoughnessTexture = textureLoader.load('/textures/bricks/roughness.jpg');
+
+
 /**
  * House
  */
@@ -46,8 +52,17 @@ scene.add(house);
 // Walls
 const walls = new THREE.Mesh(
     new THREE.BoxGeometry(4, 2.5, 4),
-    new THREE.MeshStandardMaterial({ color: '#ac8e82'})
+    new THREE.MeshStandardMaterial({
+        map: bricksColorTexture,
+        aoMap: bricksAmbientOcclusionTexture,
+        normalMap: bricksNormalTexture,
+        roughnessMap: bricksRoughnessTexture
+    })
 )
+walls.geometry.setAttribute('uv2', 
+    new THREE.Float32BufferAttribute(walls.geometry.attributes.uv.array, 2)
+)
+
 walls.position.y = 2.5 / 2
 house.add(walls);
 
