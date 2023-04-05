@@ -7,7 +7,7 @@ import { Group } from 'three'
  * Base
  */
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -59,6 +59,30 @@ grassColorTexture.wrapT = THREE.RepeatWrapping;
 grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping;
 grassNormalTexture.wrapT = THREE.RepeatWrapping;
 grassRoughnessTexture.wrapT = THREE.RepeatWrapping;
+
+
+const stonePathColorTexture = textureLoader.load('/textures/stonePath/color.jpg');
+const stonePathAmbientOcclusionTexture = textureLoader.load('/textures/stonePath/ambientOcclusion.jpg');
+const stonePathNormalTexture = textureLoader.load('/textures/stonePath/normal.jpg');
+const stonePathRoughnessTexture = textureLoader.load('/textures/stonePath/roughness.jpg');
+const stonePathHeightTexture = textureLoader.load('/textures/stonePath/height.png');
+
+stonePathColorTexture.repeat.set(1, 16);
+stonePathAmbientOcclusionTexture.repeat.set(1, 16);
+stonePathNormalTexture.repeat.set(1, 16);
+stonePathRoughnessTexture.repeat.set(1, 16);
+
+stonePathColorTexture.wrapS = THREE.RepeatWrapping;
+stonePathAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping;
+stonePathNormalTexture.wrapS = THREE.RepeatWrapping;
+stonePathRoughnessTexture.wrapS = THREE.RepeatWrapping;
+
+stonePathColorTexture.wrapT = THREE.RepeatWrapping;
+stonePathAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping;
+stonePathNormalTexture.wrapT = THREE.RepeatWrapping;
+stonePathRoughnessTexture.wrapT = THREE.RepeatWrapping;
+
+
 
 /**
  * House
@@ -164,9 +188,30 @@ for (let i = 0; i < 50; i++) {
 }
 
 
+// Stone path
 
+const stonePath = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2, 1000, 1000),
+    new THREE.MeshStandardMaterial({ 
+        map: stonePathColorTexture,
+        aoMap: stonePathAmbientOcclusionTexture,
+        displacementMap: stonePathHeightTexture,
+        displacementScale: 0.03,
+        normalMap: stonePathNormalTexture,
+        roughnessMap: stonePathRoughnessTexture
+    })
+)
 
+stonePath.geometry.setAttribute('uv2', 
+    new THREE.Float32BufferAttribute(stonePath.geometry.attributes.uv.array, 2)
+)
 
+stonePath.position.set(0, 0.001, 3);
+stonePath.scale.y = 7;
+stonePath.scale.x = 0.5;
+stonePath.rotation.x = - Math.PI * 0.5
+
+scene.add(stonePath);
 
 
 // Floor
@@ -191,16 +236,16 @@ scene.add(floor)
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.12)
-gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
+// gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
 scene.add(ambientLight)
 
 // Directional light
 const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
 moonLight.position.set(4, 5, - 2)
-gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
-gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
-gui.add(moonLight.position, 'y').min(- 5).max(5).step(0.001)
-gui.add(moonLight.position, 'z').min(- 5).max(5).step(0.001)
+// gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
+// gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
+// gui.add(moonLight.position, 'y').min(- 5).max(5).step(0.001)
+// gui.add(moonLight.position, 'z').min(- 5).max(5).step(0.001)
 scene.add(moonLight)
 
 // Door light
@@ -288,6 +333,8 @@ bush3.castShadow = true;
 bush4.castShadow = true;
 
 floor.receiveShadow = true;
+
+stonePath.receiveShadow = true;
 
 doorLight.shadow.mapSize.width = 256;
 doorLight.shadow.mapSize.height = 256;
