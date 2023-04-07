@@ -26,6 +26,8 @@ scene.fog = fog;
  */
 const textureLoader = new THREE.TextureLoader();
 
+const particleTexture = textureLoader.load('textures/particles/4.png')
+
 const doorColorTexture = textureLoader.load('/textures/door/color.jpg');
 const doorAlphaTexture = textureLoader.load('/textures/door/alpha.jpg');
 const doorAmbientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg');
@@ -206,8 +208,8 @@ stonePath.geometry.setAttribute('uv2',
     new THREE.Float32BufferAttribute(stonePath.geometry.attributes.uv.array, 2)
 )
 
-stonePath.position.set(0, 0.001, 3);
-stonePath.scale.y = 7;
+stonePath.position.set(0, 0.001, 5);
+stonePath.scale.y = 5;
 stonePath.scale.x = 0.5;
 stonePath.rotation.x = - Math.PI * 0.5
 
@@ -231,16 +233,52 @@ floor.rotation.x = - Math.PI * 0.5
 floor.position.y = 0
 scene.add(floor)
 
+
+
+/**
+ * Particles
+ */
+// Geometry 
+const particlesGeometry = new THREE.BufferGeometry();
+const count = 100;
+
+const positions = new Float32Array(count * 3);
+
+for (let i = 0; i < count * 3; i++) {
+    positions[i] = (Math.random() - 0.5) * 17;
+}
+
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+// Material 
+const particlesMaterial = new THREE.PointsMaterial({
+    size: 0.09,
+    sizeAttenuation: true
+})
+particlesMaterial.transparent = true;
+particlesMaterial.alphaMap = particleTexture;
+particlesMaterial.depthWrite = false;
+particlesMaterial.blending = THREE.AdditiveBlending
+
+// Points / particles
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+
+scene.add(particles);
+
+
+
+
 /**
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.12)
+const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.08)
 // gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
 scene.add(ambientLight)
 
 // Directional light
-const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.12)
+const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.08)
 moonLight.position.set(4, 5, - 2)
 // gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
 // gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
@@ -360,6 +398,21 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+
+    // Update particles
+    particles.rotation.y = elapsedTime * 0.02;
+
+    // Blink every particle every 0.1 seconds
+    for (let i = 0; i < count; i++) {
+        // particles[i].material.opacity = (Math.sin(elapsedTime * 3) + 1) / 2;
+    }
+
+
+
+
+        
+    
 
     // Update Ghosts
     const ghost1Angle = elapsedTime * 0.5
