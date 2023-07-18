@@ -8,6 +8,7 @@ The project involves building a haunted house scene using Three.js primitives as
 
 https://haunted-house-three-js-eight.vercel.app/ 🚀
 
+![641shots_so](https://github.com/Singh233/Haunted-House-ThreeJs/assets/37498067/68c4f302-0076-4bca-b62d-767601fc189f)
 
 ## Run Project Locally
 
